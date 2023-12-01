@@ -1,0 +1,8 @@
+.idea/
+cmake-build-debug/
+log_server
+second_server
+first/*/.vs
+client/.vs
+client/x64
+first/backend/out

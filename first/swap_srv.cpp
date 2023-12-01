@@ -1,6 +1,5 @@
 #include "swap_srv.h"
 
-
 int main() {
     SOCKET socket = socket(AF_INET, SOCK_STREAM, 0);
     std::cout << "The server is running" << std::endl;
