@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "csignal": "cpp",
-        "cstdlib": "cpp",
-        "cstring": "cpp",
-        "ctime": "cpp"
-    }
-}

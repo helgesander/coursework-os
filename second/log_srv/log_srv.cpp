@@ -1,31 +1,36 @@
 #include "log_srv.h"
 
 int main() {
-    std::cout << "Log server start..." << std::endl;
-    std::ofstream logfile(log_name);
+    std::ofstream logfile(log_name, std::ios_base::app);
+    logfile << "[" << logTime() << "]" << server_name << " Log server start" << std::endl;
     int fd = open(PIPE_NAME, O_RDONLY);
+    size_t count_of_timeouts = 0;
     while (fd == -1) {
-        std::cout << "Error to open pipe, retry in 5 seconds..." << std::endl; 
-        // logfile << log_name<< " " << "Error to open pipe, retry in 5 seconds..." << std::endl;
+        if (count_of_timeouts == 10) {
+            logfile << "[" << logTime() << "]" << server_name << " " << "Fatal error to open pipe, exit..." << std::endl;
+            return 0;
+        }
+        logfile << "[" <<  logTime() << "]"<< server_name << " " << "Error to open pipe, retry in 5 seconds..." << std::endl;
         sleep(5);
+        count_of_timeouts++;
         fd = open(PIPE_NAME, O_RDONLY);
     }
-    bool flag = true;
-    while(flag) { 
+    while(true) { 
         char log_info[BUFSIZE] = {0};
         read(fd, log_info, BUFSIZE);
-        std::cout << log_info << std::endl;
         if (!strcmp(log_info, "EXIT")) {
-            logfile << server_name << " " << "Log server is shutdown" << std::endl; 
-            flag = false;
-        } else {
-            std::time_t now = std::time(0);
-            std::tm* localTime = std::localtime(&now);
-            std::string time_for_print = std::asctime(localTime);
-            time_for_print.pop_back();
-            logfile << "[" <<  time_for_print << "] " << log_info;
-            //std::cout << log_info;
-        }
+            logfile << "[" <<  logTime() << "]" << server_name << " " << "Log server is shutdown" << std::endl; 
+            break;
+        } else
+            logfile << "[" <<  logTime() << "]" << log_info;
     }
     return 0;
+}
+
+std::string logTime() {
+    std::time_t now = std::time(0);
+    std::tm* localTime = std::localtime(&now);
+    std::string time_for_print = std::asctime(localTime);
+    time_for_print.pop_back();
+    return time_for_print;
 }

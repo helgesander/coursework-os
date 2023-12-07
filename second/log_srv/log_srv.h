@@ -9,7 +9,6 @@
 #include <string.h>
 #include <fcntl.h>
 #include <ctime>
-// #include <iomanip>
 
 #define PIPE_NAME "/tmp/second_log_pipe"
 #define BUFSIZE 128
@@ -21,5 +20,7 @@ enum DATA_FLAGS {
     GET_SCREENSIZE,
     GET_PROCESS_TIME
 };
+
+std::string logTime();
 
 #endif

@@ -4,7 +4,11 @@
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
+#include <ctime>
 
 #define PIPE_NAME "/tmp/first_log_pipe"
 #define BUFSIZE 128

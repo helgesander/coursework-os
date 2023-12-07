@@ -39,7 +39,7 @@ enum DATA_FLAGS {
 
 std::pair<int, int> getScreensize();
 int getProcessTime(time_t);
-void clientHandler(int clientSocket, time_t start_time);
+void clientHandler(int clientSocket, time_t start_time, const char* ipstr);
 void signalHandler(int);
 void log(const char[]);
 

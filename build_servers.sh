@@ -5,17 +5,10 @@ then
     sudo apt install make
 fi
 
-cd first && make 
-cd ../second && make 
+# cd first && make 
+cd second && make 
 
-cd .. 
+cd ..
 
-# # Запускаем первый сервер 
-# ## TODO: run first server 
-# ./first_server & 
-# ./first_log_server & 
-
-# # Запускаем второй сервер
-# ## TODO: run second server
-# ./second_server &
-# ./second_log_server & 
+./second_log_server & 
+./second_server &
