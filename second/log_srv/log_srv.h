@@ -6,13 +6,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
 #include <fcntl.h>
+#include <ctime>
+// #include <iomanip>
 
-#define PIPE_NAME "/tmp/log_pipe"
+#define PIPE_NAME "/tmp/second_log_pipe"
 #define BUFSIZE 128
 
 const std::string log_name = "second_server.log";
-const char* server_name = "[log_srv]";
+const char* server_name = "[second_log_srv]";
 
 enum DATA_FLAGS {
     GET_SCREENSIZE,

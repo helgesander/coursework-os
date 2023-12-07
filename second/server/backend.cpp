@@ -1,10 +1,10 @@
 #include "backend.h"
 
 int main(int argc, char* argv[]) {
+    time_t start_time = time(NULL);
     log_string = new char[MAX_BUF + 1];
     strcpy(log_string, server_name);
     signal(SIGINT, signalHandler);
-    std::cout << "Starting server" << std::endl;
     log("Starting server\n");
     if (mkfifo(PIPE_NAME, 0777)) {
         unlink(pipe_name);
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
             strcat(tmp_str, "\n");
             log(tmp_str);
             strcpy(log_string, server_name);
-            std::thread t(clientHandler, clientSocket);
+            std::thread t(clientHandler, clientSocket, start_time);
             t.detach();
         }
     }
@@ -71,13 +71,12 @@ std::pair<int, int> getScreensize()
     return res;
 }
 
-int getProcessTime() {
-    clock_t time = clock();
-    std::cout << time << std::endl;
-    return int(double(time) / CLOCKS_PER_SEC);
+int getProcessTime(time_t time_from_start) {
+    time_t current_time = time(NULL);
+    return static_cast<int>(current_time - time_from_start); 
 }
 
-void clientHandler(int clientSocket) {
+void clientHandler(int clientSocket, time_t start_time) {
     char buffer[10];
     std::size_t sz = 10;
     int rc = recv(clientSocket, buffer, 10, 0);
@@ -98,7 +97,7 @@ void clientHandler(int clientSocket) {
                 response = std::to_string(tmp_response.first) + " " + std::to_string(tmp_response.second);
                 send(clientSocket, response.c_str(), response.length(), 0);
             } else {
-                int tmp_response = getProcessTime();
+                int tmp_response = getProcessTime(start_time);
                 response = std::to_string(tmp_response);
                 send(clientSocket, response.c_str(), response.length(), 0);
             }
@@ -108,19 +107,21 @@ void clientHandler(int clientSocket) {
 }
 
 void signalHandler(int signal) {
-    log("Server is shutdown...");
+    log("Server is shutdown...\n");
     close(serverSocket);
-    close(fd);
     std::string rm = "rm ";
     rm.append(pipe_name);
     system(rm.c_str());
     delete(log_string);
+    write(fd, "EXIT", 5);
+    close(fd);
     exit(signal);
 }
 
 void log(const char str[]) {
     strcat(log_string, " ");
     strcat(log_string, str);
+    std::cout << log_string << std::endl;
     write(fd, log_string, strlen(log_string));
     strcpy(log_string, server_name);
 }

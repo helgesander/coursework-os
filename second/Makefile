@@ -10,5 +10,5 @@ backend:
 	$(CC) $(CFLAGS) server/backend.cpp -o ../second_server -lX11
 
 clean:
-	rm ../log_server
+	rm ../second_log_server
 	rm ../second_server

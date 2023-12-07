@@ -7,3 +7,6 @@ client/.vs
 client/x64
 first/backend/out
 second_server.log
+CMakeLists.txt
+second/*/CMakeLists.txt
+first/*/CMake*.txt
