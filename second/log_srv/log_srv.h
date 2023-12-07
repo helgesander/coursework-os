@@ -5,10 +5,11 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
 
 #define PIPE_NAME "/tmp/log_pipe"
+#define BUFSIZE 128
 
 const std::string log_name = "second_server.log";
 const char* server_name = "[log_srv]";

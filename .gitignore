@@ -6,3 +6,4 @@ first/*/.vs
 client/.vs
 client/x64
 first/backend/out
+second_server.log

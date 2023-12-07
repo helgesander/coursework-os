@@ -5,7 +5,7 @@
 - [ ] First server (Windows)
 - [x] Second server (Linux)
 - [ ] Log server for first (optional)
-- [ ] Log server for second (optional)
+- [x] Log server for second (optional)
 - [ ] GUI client (optional)
 - [ ] Some strange errors with pipes in secons server 
 

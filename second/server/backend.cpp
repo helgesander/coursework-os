@@ -108,17 +108,17 @@ void clientHandler(int clientSocket) {
 }
 
 void signalHandler(int signal) {
-//    strcat(log_string, " Server is shutdown...");
     log("Server is shutdown...");
     close(serverSocket);
     close(fd);
-    std::string rm = "rm " + pipe_name;
+    std::string rm = "rm ";
+    rm.append(pipe_name);
     system(rm.c_str());
     delete(log_string);
     exit(signal);
 }
 
-bool log(char str[]) {
+void log(const char str[]) {
     strcat(log_string, " ");
     strcat(log_string, str);
     write(fd, log_string, strlen(log_string));

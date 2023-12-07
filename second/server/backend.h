@@ -40,6 +40,6 @@ std::pair<int, int> getScreensize();
 int getProcessTime();
 void clientHandler(int clientSocket);
 void signalHandler(int);
-bool log(char[]);
+void log(const char[]);
 
 #endif //JULIA_COURSEWORK_WORKING_TIME_AND_SCREENSIZE_SRV_H
