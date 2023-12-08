@@ -5,6 +5,8 @@ then
     sudo apt install make
 fi
 
+sudo apt install libx11-dev
+
 make -B
 
 ./second_log & 
