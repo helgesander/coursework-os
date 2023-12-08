@@ -1,4 +1,4 @@
-    #ifndef JULIA_COURSEWORK_WORKING_TIME_AND_SCREENSIZE_SRV_H
+#ifndef JULIA_COURSEWORK_WORKING_TIME_AND_SCREENSIZE_SRV_H
 #define JULIA_COURSEWORK_WORKING_TIME_AND_SCREENSIZE_SRV_H
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -11,13 +11,11 @@
 #include <ctime>
 #include <utility>
 #include <sys/socket.h>
-#include <vector>
 #include <cstring>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <fstream>
 #include <csignal>
 #include <cstdlib>
 
