@@ -31,8 +31,9 @@ const char* server_name = "[second_server]";
 const std::string null(BUFSIZE - 1, '\0');
 
 enum DATA_FLAGS {
-    GET_SCREENSIZE,
-    GET_PROCESS_TIME
+    CLOSE_CONNECTION,  /* 0 */
+    GET_SCREENSIZE,    /* 1 */
+    GET_PROCESS_TIME   /* 2 */
 };
 
 std::pair<int, int> getScreensize();
@@ -40,5 +41,6 @@ int getProcessTime(time_t);
 void clientHandler(int clientSocket, time_t start_time, const char* ipstr);
 void signalHandler(int);
 void log(const char[]);
+void errorHandler();
 
 #endif //JULIA_COURSEWORK_WORKING_TIME_AND_SCREENSIZE_SRV_H

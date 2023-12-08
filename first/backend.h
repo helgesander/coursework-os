@@ -25,8 +25,9 @@ const char* server_name = "[first_server]";
 const std::string null(BUFSIZE - 1, '\0');
 
 enum DATA_FLAGS {
-    GET_SWAP_SIZE,
-    GET_FREE_SWAP_BYTES
+    CLOSE_CONNECTION,        /* 0 */
+    GET_SWAP_SIZE,           /* 1 */
+    GET_FREE_SWAP_BYTES      /* 2 */         
 };
 
 int getSwapSize();
@@ -34,5 +35,6 @@ int getFreeSwapBytes();
 void signalHandler(int signal);
 void log(const char str[]);
 void clientHandler(int clientSocket, const char* ipstr);
+void errorHandler();
 
 #endif

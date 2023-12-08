@@ -11,7 +11,11 @@ int main(int argc, char* argv[]) {
     }
     fd = open(PIPE_NAME, O_WRONLY);
     if (fd == -1) {
-        return -1;
+        std::string rm = "rm ";
+        rm.append(pipe_name);
+        system(rm.c_str());
+        delete(log_string);
+        return 1;
     }
     log("Starting server\n");
     struct sockaddr_in serverAddr, clientAddr;
@@ -19,18 +23,27 @@ int main(int argc, char* argv[]) {
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {
         log("Error to create socket\n");
-        return -1;
+        std::string rm = "rm ";
+        rm.append(pipe_name);
+        system(rm.c_str());
+        delete(log_string);
+        write(fd, "EXIT", 5);
+        close(fd);
+        return 1;
     }
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(PORT);
     if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         log("Error with binding socket\n");
-        return -1;
+        std::string rm = "rm ";
+        rm.append(pipe_name);
+        system(rm.c_str());
+        delete(log_string);
+        write(fd, "EXIT", 5);
+        close(fd);
+        return 1;
     }
-    std::string port = "PORT: " + std::to_string(PORT);
-    port.push_back('\n');
-    log(port.c_str());
     listen(serverSocket, SOMAXCONN);
     while (true)
     {
@@ -77,38 +90,53 @@ int getProcessTime(time_t time_from_start) {
 void clientHandler(int clientSocket, time_t start_time, const char* ipstr) {
     char buffer[10];
     std::size_t sz = 10;
-    int rc = recv(clientSocket, buffer, 10, 0);
-    int flag = std::stoi(buffer, &sz, 10);
-    if (rc < 0)
-        log("Error with reading data from client\\n");
-    else {
-        if (flag != GET_PROCESS_TIME && flag != GET_SCREENSIZE) {
-            send(clientSocket, "bad choice", 11, MSG_NOSIGNAL);
-            log("Bad choice\n");
-        }
-        else {
-            std::string tmp = "Client from ";
-            tmp.append(ipstr); 
+    bool exit = false;
+    while (!exit) {
+        std::string tmp = "Client from ";
+        tmp.append(ipstr); 
+        int rc = recv(clientSocket, buffer, 10, 0);
+        int flag = std::stoi(buffer, &sz, 10);
+        if (rc < 0) {
+            tmp.append(ipstr);
+            tmp.append(": Error with reading data from client\\n");
+            log(tmp.c_str());
+        } else {
             std::string response;
-            if (flag == GET_SCREENSIZE) {
-                auto tmp_response = getScreensize(); 
-                tmp.append(" ask screen size: ");
-                response = std::to_string(tmp_response.first) + " " + std::to_string(tmp_response.second);
-                tmp.append(response);
-                tmp.push_back('\n');
-                log(tmp.c_str());
-                send(clientSocket, response.c_str(), response.length(), 0);
-            } else {
-                int tmp_response = getProcessTime(start_time);
-                tmp.append(" ask server uptime: ");
-                response = std::to_string(tmp_response);
-                tmp.append(response);
-                tmp.push_back('\n');
-                log(tmp.c_str());
-                send(clientSocket, response.c_str(), response.length(), 0);
+            std::pair<int, int> screensize_response;
+            int time_response;
+            switch (flag) {
+                case GET_SCREENSIZE:
+                    screensize_response = getScreensize(); 
+                    tmp.append(" ask screen size: ");
+                    response = std::to_string(screensize_response.first) + " " + std::to_string(screensize_response.second);
+                    tmp.append(response);
+                    tmp.push_back('\n');
+                    log(tmp.c_str());
+                    send(clientSocket, response.c_str(), response.length(), 0);
+                    break;
+                case GET_PROCESS_TIME: 
+                    time_response = getProcessTime(start_time);
+                    tmp.append(" ask server uptime: ");
+                    response = std::to_string(time_response);   
+                    tmp.append(response);
+                    tmp.push_back('\n');
+                    log(tmp.c_str());
+                    send(clientSocket, response.c_str(), response.length(), 0);
+                    break;
+                case CLOSE_CONNECTION:
+                    exit = true;
+                    break;
+                default:
+                    tmp.append(": bad choice\n");
+                    send(clientSocket, "bad choice", 11, MSG_NOSIGNAL);
+                    log(tmp.c_str());
+                }
             }
         }
-    }
+    std::string close_connection = "Client from ";
+    close_connection.append(ipstr);
+    close_connection.append(" close connection\n");
+    log(close_connection.c_str());
     close(clientSocket);
 }
 

@@ -10,7 +10,13 @@ int main() {
     }
     fd = open(PIPE_NAME, O_WRONLY);
     if (fd == -1) {
-        return -1;
+        log(strerror(errno));
+        std::string rm = "rm ";
+        rm.append(pipe_name);
+        system(rm.c_str());
+        delete(log_string);
+        write(fd, "EXIT", 5);
+        return 1;
     }
     log("Starting server\n");
     struct sockaddr_in serverAddr, clientAddr;
@@ -19,18 +25,27 @@ int main() {
     if (serverSocket < 0) {
 
         log("Error to create socket\n");
-        return -1;
+        std::string rm = "rm ";
+        rm.append(pipe_name);
+        system(rm.c_str());
+        delete(log_string);
+        write(fd, "EXIT", 5);
+        close(fd);
+        return 1;
     }
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(PORT);
     if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         log("Error with binding socket\n");
-        return -1;
+        std::string rm = "rm ";
+        rm.append(pipe_name);
+        system(rm.c_str());
+        delete(log_string);
+        write(fd, "EXIT", 5);
+        close(fd);
+        return 1;
     }
-    std::string port = "PORT: " + std::to_string(PORT);
-    port.push_back('\n');
-    log(port.c_str());
     listen(serverSocket, SOMAXCONN);
     while (true)
     {
@@ -65,6 +80,7 @@ void signalHandler(int signal) {
     exit(signal);
 }
 
+
 void log(const char str[]) {
     strcat(log_string, " ");
     strcat(log_string, str);
@@ -75,40 +91,52 @@ void log(const char str[]) {
 void clientHandler(int clientSocket, const char* ipstr) {
     char buffer[10];
     std::size_t sz = 10;
-    int rc = recv(clientSocket, buffer, 10, 0);
-    int flag = std::stoi(buffer, &sz, 10);
-    if (rc < 0)
-        log("Error with reading data from client\\n");
-    else {
-        if (flag != GET_SWAP_SIZE && flag != GET_FREE_SWAP_BYTES) {
-            send(clientSocket, "bad choice", 11, MSG_NOSIGNAL);
-            log("Bad choice\n");
-        }
+    bool exit = false;
+    while (!exit) {
+        std::string tmp = "Client from ";
+        tmp.append(ipstr); 
+        int rc = recv(clientSocket, buffer, 10, 0);
+        int flag = std::stoi(buffer, &sz, 10);
+        if (rc < 0)
+            log("Error with reading data from client\\n");
         else {
-            std::string tmp = "Client from ";
-            tmp.append(ipstr); 
+            int swap_response, free_swap_bytes_response;
             std::string response;
-            if (flag == GET_SWAP_SIZE) {
-                int tmp_response = getSwapSize(); 
-                tmp.append(" ask swap size: ");
-                if (tmp_response == -1) response = "error to get swap size";
-                else response = std::to_string(tmp_response);
-                tmp.append(response);
-                tmp.push_back('\n');
-                log(tmp.c_str());
-                send(clientSocket, response.c_str(), response.length(), MSG_NOSIGNAL);
-            } else {
-                int tmp_response = getFreeSwapBytes();
-                tmp.append(" ask free swap bytes: ");
-                if (tmp_response == -1) response = "error to get free swap bytes";
-                else response = std::to_string(tmp_response);
-                tmp.append(response);
-                tmp.push_back('\n');
-                log(tmp.c_str());
-                send(clientSocket, response.c_str(), response.length(), MSG_NOSIGNAL);
+            switch (flag) {
+                case GET_SWAP_SIZE: 
+                    swap_response = getSwapSize(); 
+                    tmp.append(" ask swap size: ");
+                    if (swap_response == -1) response = "error to get swap size";
+                    else response = std::to_string(swap_response);
+                    tmp.append(response);
+                    tmp.push_back('\n');
+                    log(tmp.c_str());
+                    send(clientSocket, response.c_str(), response.length(), MSG_NOSIGNAL);
+                    break;
+                case GET_FREE_SWAP_BYTES: 
+                    free_swap_bytes_response = getFreeSwapBytes();
+                    tmp.append(" ask free swap bytes: ");
+                    if (free_swap_bytes_response == -1) response = "error to get free swap bytes";
+                    else response = std::to_string(free_swap_bytes_response);
+                    tmp.append(response);
+                    tmp.push_back('\n');
+                    log(tmp.c_str());
+                    send(clientSocket, response.c_str(), response.length(), MSG_NOSIGNAL);
+                    break;
+                case CLOSE_CONNECTION:
+                    exit = true;
+                    break;
+                default:
+                    tmp.append(": bad choice\n");
+                    send(clientSocket, "bad choice", 11, MSG_NOSIGNAL);
+                    log(tmp.c_str());
             }
         }
     }
+    std::string close_connection = "Client from ";
+    close_connection.append(ipstr);
+    close_connection.append(" close connection\n");
+    log(close_connection.c_str());
     close(clientSocket);
 }
 
