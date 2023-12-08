@@ -7,7 +7,7 @@
 - [ ] Log server for first (optional)
 - [x] Log server for second (optional)
 - [ ] GUI client (optional) (Windows)
-- [ ] Some strange errors with pipes in secons server
+- [x] Some strange errors with pipes in secons server
 
 ## Что и как работает
 
@@ -38,4 +38,8 @@ kill -2 *pid первого сервера* *pid второго сервера*
 ```
 
 Сервера логирования завершаются тогда же, когда и основные сервера, поэтому о корректном их завершении беспокоиться не надо.<br>
-Чтобы узнать PID серверов, 
+Чтобы узнать PID серверов, вводим эту команду:
+
+```shell
+pgrep first_server && pgrep second_server
+```

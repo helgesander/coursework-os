@@ -24,12 +24,15 @@ int main(int argc, char* argv[]) {
     }
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddr.sin_port = htons(12345);
+    serverAddr.sin_port = htons(PORT);
     if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         // std::cerr << "Error with binding to socker" << std::endl;
         log("Error with binding socket\n");
         return -1;
     }
+    std::string port = "PORT: " + std::to_string(PORT);
+    port.push_back('\n');
+    log(port.c_str());
     listen(serverSocket, SOMAXCONN);
     while (true)
     {
@@ -128,7 +131,6 @@ void signalHandler(int signal) {
 void log(const char str[]) {
     strcat(log_string, " ");
     strcat(log_string, str);
-    // std::cout << log_string << std::endl;
     write(fd, log_string, strlen(log_string));
     strcpy(log_string, server_name);
 }
