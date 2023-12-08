@@ -1,7 +1,6 @@
 ﻿#include "backend.h"
 
 int main() {
-    std::cout << getFreeSwapBytes() << " " << getSwapSize() << std::endl;
     log_string = new char[MAX_BUF + 1];
     strcpy(log_string, server_name);
     signal(SIGINT, signalHandler);
@@ -81,8 +80,10 @@ void clientHandler(int clientSocket, const char* ipstr) {
     if (rc < 0)
         log("Error with reading data from client\\n");
     else {
-        if (flag != GET_SWAP_SIZE && flag != GET_FREE_SWAP_BYTES)
+        if (flag != GET_SWAP_SIZE && flag != GET_FREE_SWAP_BYTES) {
+            send(clientSocket, "bad choice", 11, MSG_NOSIGNAL);
             log("Bad choice\n");
+        }
         else {
             std::string tmp = "Client from ";
             tmp.append(ipstr); 
@@ -95,7 +96,7 @@ void clientHandler(int clientSocket, const char* ipstr) {
                 tmp.append(response);
                 tmp.push_back('\n');
                 log(tmp.c_str());
-                send(clientSocket, response.c_str(), response.length(), 0);
+                send(clientSocket, response.c_str(), response.length(), MSG_NOSIGNAL);
             } else {
                 int tmp_response = getFreeSwapBytes();
                 tmp.append(" ask free swap bytes: ");
@@ -104,7 +105,7 @@ void clientHandler(int clientSocket, const char* ipstr) {
                 tmp.append(response);
                 tmp.push_back('\n');
                 log(tmp.c_str());
-                send(clientSocket, response.c_str(), response.length(), 0);
+                send(clientSocket, response.c_str(), response.length(), MSG_NOSIGNAL);
             }
         }
     }

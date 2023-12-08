@@ -18,7 +18,6 @@ int main(int argc, char* argv[]) {
     socklen_t clientStructLen;
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {
-        // std::cerr << "Error to create socket" << std::endl;
         log("Error to create socket\n");
         return -1;
     }
@@ -26,7 +25,6 @@ int main(int argc, char* argv[]) {
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(PORT);
     if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        // std::cerr << "Error with binding to socker" << std::endl;
         log("Error with binding socket\n");
         return -1;
     }
@@ -38,7 +36,6 @@ int main(int argc, char* argv[]) {
     {
         int clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientStructLen);
         if (clientSocket < 0) {
-            //std::cout << "Error with connection to server" << std::endl;
             log("Error with connection to server\n");
             continue;
         } else {
@@ -82,14 +79,13 @@ void clientHandler(int clientSocket, time_t start_time, const char* ipstr) {
     std::size_t sz = 10;
     int rc = recv(clientSocket, buffer, 10, 0);
     int flag = std::stoi(buffer, &sz, 10);
-    //std::cout << flag << std::endl;
     if (rc < 0)
-        //std::cerr << "Error with reading data from client" << std::endl;
         log("Error with reading data from client\\n");
     else {
-        if (flag != GET_PROCESS_TIME && flag != GET_SCREENSIZE)
-            //std::cerr << "Bad choice" << std::endl;
+        if (flag != GET_PROCESS_TIME && flag != GET_SCREENSIZE) {
+            send(clientSocket, "bad choice", 11, MSG_NOSIGNAL);
             log("Bad choice\n");
+        }
         else {
             std::string tmp = "Client from ";
             tmp.append(ipstr); 

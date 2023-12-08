@@ -11,3 +11,6 @@ CMakeLists.txt
 second/*/CMakeLists.txt
 first/*/CMake*.txt
 .vscode/
+second_server.log
+first_server.log 
+

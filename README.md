@@ -2,9 +2,9 @@
 
 ## To fix
 
-- [ ] First server (Linux)
+- [x] First server (Linux)
 - [x] Second server (Linux)
-- [ ] Log server for first (optional)
+- [x] Log server for first (optional)
 - [x] Log server for second (optional)
 - [ ] GUI client (optional) (Windows)
 - [x] Some strange errors with pipes in secons server
@@ -13,9 +13,10 @@
 
 Если вдруг препод спросит, где велась основная разработка, то CLion + VS Code
 
-- __get_swap_information_srv__ - здесь лежит сервер, который отсылает инфу о размере файла подкачки, работает на Linux
-- __get_working_time_and_screen_size__ - здесь лежит сервер, который отсылает инфу о времени работы серверного процесса и размере экрана, работает на Linux
-- __client_gui__ - там лежит сам клиент, с которого будет взаимодействие с серверами
+- __first__- здесь лежит сервер, который отсылает инфу о размере файла подкачки, работает на Linux
+- __second__ - здесь лежит сервер, который отсылает инфу о времени работы серверного процесса и размере экрана, работает на Linux
+- __log__ - сервер логирования
+- __client__ - там лежит сам клиент, с которого будет взаимодействие с серверами
 
 Для каждого сервера есть свой лог сервер ([first](first/log_srv), [second](second/log_srv))
 
@@ -43,3 +44,5 @@ kill -2 *pid первого сервера* *pid второго сервера*
 ```shell
 pgrep first_server && pgrep second_server
 ```
+
+Чтобы особо тебе не заморачиваться, я написала скрипт __finish_servers.sh__, запускаешь и сервера выключаются.
