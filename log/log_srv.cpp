@@ -8,9 +8,11 @@ int main() {
     while (fd == -1) {
         if (count_of_timeouts == 10) {
             logfile << "[" << logTime() << "]" << server_name << " " << "Fatal error to open pipe, exit..." << std::endl;
+            logfile.flush();
             return 0;
         }
         logfile << "[" <<  logTime() << "]"<< server_name << " " << "Error to open pipe, retry in 5 seconds..." << std::endl;
+        logfile.flush();
         sleep(5);
         count_of_timeouts++;
         fd = open(PIPE_NAME, O_RDONLY);
@@ -20,10 +22,15 @@ int main() {
         read(fd, log_info, BUFSIZE);
         if (!strcmp(log_info, "EXIT")) {
             logfile << "[" <<  logTime() << "]" << server_name << " " << "Log server is shutdown" << std::endl; 
+            logfile.flush();
             break;
-        } else
+        } else {
             logfile << "[" <<  logTime() << "]" << log_info;
+            logfile.flush();
+        }
+           
     }
+    logfile.close();
     return 0;
 }
 
