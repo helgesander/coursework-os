@@ -6,7 +6,7 @@
 - [x] Second server (Linux)
 - [x] Log server for first (optional)
 - [x] Log server for second (optional)
-- [ ] GUI client (optional) (Windows)
+- [x] GUI client (optional) (Windows)
 - [x] Some strange errors with pipes in secons server
 
 ## Что и как работает
