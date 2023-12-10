@@ -30,8 +30,8 @@ enum DATA_FLAGS {
     GET_FREE_SWAP_BYTES      /* 2 */         
 };
 
-int getSwapSize();
-int getFreeSwapBytes();
+long long getSwapSize();
+long long getFreeSwapBytes();
 void signalHandler(int signal);
 void log(const char str[]);
 void clientHandler(int clientSocket, const char* ipstr);

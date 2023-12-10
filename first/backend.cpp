@@ -100,7 +100,7 @@ void clientHandler(int clientSocket, const char* ipstr) {
         if (rc < 0)
             log("Error with reading data from client\\n");
         else {
-            int swap_response, free_swap_bytes_response;
+            long long swap_response, free_swap_bytes_response;
             std::string response;
             switch (flag) {
                 case GET_SWAP_SIZE: 
@@ -140,7 +140,7 @@ void clientHandler(int clientSocket, const char* ipstr) {
     close(clientSocket);
 }
 
-int getSwapSize() {
+long long getSwapSize() {
     long long res;
     struct sysinfo info;
     if (sysinfo(&info) != 0) {
@@ -151,7 +151,7 @@ int getSwapSize() {
     return res;
 }
 
-int getFreeSwapBytes() {
+long long getFreeSwapBytes() {
     long long res;
     struct sysinfo info;
     if (sysinfo(&info) != 0) {
