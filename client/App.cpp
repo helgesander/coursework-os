@@ -4,7 +4,7 @@
 using namespace System::Windows::Forms;
 using namespace client;
 
-void main()
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
