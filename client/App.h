@@ -371,13 +371,13 @@ private: System::Void getInfoButton_Click(System::Object^ sender, System::EventA
 	else if (this->radioButton1->Checked) {
 		send(firstClientSocket, "1", 2, 0);
 		recv(firstClientSocket, buf, 10, 0);
-		int num = std::atoi(buf);
+		long long num = std::stoll(buf);
 		getInfoPretty(L"Размер файла подкачки: " + Convert::ToString(num) + L" байт");
 	}
 	else if (this->radioButton2->Checked) {
 		send(firstClientSocket, "2", 2, 0);
 		recv(firstClientSocket, buf, 10, 0);
-		int num = std::atoi(buf);
+		long long num = std::stoll(buf);
 		getInfoPretty(L"Размер свободного места файла подкачки: " + Convert::ToString(num) + L" байт");
 	}
 	else {
