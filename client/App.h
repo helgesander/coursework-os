@@ -357,21 +357,28 @@ private: System::Void getInfoButton_Click(System::Object^ sender, System::EventA
 	if (this->radioButton3->Checked) {
 		send(secondClientSocket, "2", 2, 0);
 		recv(secondClientSocket, buf, 10, 0);
-		getInfoPretty(L"Время работы " + marshal_as<String^>(buf) + L" секунд");
+		int num = std::atoi(buf);
+		getInfoPretty(L"Время работы " + Convert::ToString(num) + L" секунд");
 	}
 	else if (this->radioButton4->Checked) {
 		send(secondClientSocket, "1", 2, 0);
 		recv(secondClientSocket, buf, 9, 0);
-		getInfoPretty(L"Размер экрана: " + marshal_as<String^>(buf));	}
+		char* pEnd;
+		int num1 = std::strtol(buf, &pEnd, 10);
+		int num2 = std::strtol(pEnd, &pEnd, 10);
+		getInfoPretty(L"Размер экрана: " + Convert::ToString(num1) + L" " + Convert::ToString(num2));
+	}
 	else if (this->radioButton1->Checked) {
 		send(firstClientSocket, "1", 2, 0);
 		recv(firstClientSocket, buf, 10, 0);
-		getInfoPretty(L"Размер файла подкачки: " + marshal_as<String^>(buf) + L" байт");
+		int num = std::atoi(buf);
+		getInfoPretty(L"Размер файла подкачки: " + Convert::ToString(num) + L" байт");
 	}
 	else if (this->radioButton2->Checked) {
 		send(firstClientSocket, "2", 2, 0);
 		recv(firstClientSocket, buf, 10, 0);
-		getInfoPretty(L"Размер свободного места файла подкачки: " + marshal_as<String^>(buf) + L" байт");
+		int num = std::atoi(buf);
+		getInfoPretty(L"Размер свободного места файла подкачки: " + Convert::ToString(num) + L" байт");
 	}
 	else {
 		this->errorLabel->Location = System::Drawing::Point(85, 210);
