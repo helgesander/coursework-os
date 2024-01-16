@@ -1,46 +1,35 @@
 # Coursework
 
-## To fix
+## TODO:
 
 - [x] First server (Linux)
 - [x] Second server (Linux)
-- [x] Log server for first (optional)
-- [x] Log server for second (optional)
-- [x] GUI client (optional) (Windows)
-- [x] Some strange errors with pipes in secons server
+- [x] Log server for first 
+- [x] Log server for second
+- [x] GUI client (Windows)
+- [ ] Fix bugs with shuttind down servers
+- [ ] Merge Makefiles 
+- [ ] Fix building script 
 
-## Что и как работает
+## Description
 
-Если вдруг препод спросит, где велась основная разработка, то CLion + VS Code
+- __swap_size_srv__- send info about swapsize
+- __uptime_and_screensize_srv__ - send info about screensize and uptime
+- __log__ - log server
+- __client__ - windows client
 
-- __first__- здесь лежит сервер, который отсылает инфу о размере файла подкачки, работает на Linux
-- __second__ - здесь лежит сервер, который отсылает инфу о времени работы серверного процесса и размере экрана, работает на Linux
-- __log__ - сервер логирования
-- __client__ - там лежит сам клиент, с которого будет взаимодействие с серверами
+## Run servers
 
-## Скрипт для запуска
+To run servers, run __build_servers.sh__ 
 
-В репозитории есть скрипт __build_servers.sh__ , который собирает и запускает сервера, ставит необходимые зависимости, клиент же надо будет самому собрать в Visual Studio. В скрипте сервера по заданию запускаются в фоновом режиме, потому что настроено логирование. Сервера для логирования тоже. Чтобы понимать, что происходит в серверах, сервера логирования создают специальные файлы и записывают туда информацию. Чтобы ее получить, достаточно вызвать команду:
+## Logs
 
-```shell
-tail -f *название лог файла* 
-```
-
-Благодаря этой команде будут подгружаться в консоль события.
-
-## Заврешние работы серверов
-
-Поскольку все сервера запускаются в фоновом режиме, то и сигнал SIGINT, который отбрабатывается в коде, для корректного завершения работы сервера отдавать не получится с помощью Ctrl + C, поэтому для завершения работы серверов надо будет выполнить в консоли вот эти команду:
+Command to view logs:
 
 ```shell
-kill -2 *pid первого сервера* *pid второго сервера*
+tail -f *name of log file* 
 ```
 
-Сервера логирования завершаются тогда же, когда и основные сервера, поэтому о корректном их завершении беспокоиться не надо.<br>
-Чтобы узнать PID серверов, вводим эту команду:
+## Shut down servers
 
-```shell
-pgrep first_server && pgrep second_server
-```
-
-Чтобы особо тебе не заморачиваться, я написала скрипт __finish_servers.sh__, запускаешь и сервера выключаются.
+To shutdown servers, run __finish_servers.sh__
